@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VisionGuard AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI';
+            background: #0f172a;
+            color: white;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .left {
+            width: 50%;
+        }
+
+        .right {
+            width: 40%;
+        }
+
+        img {
+            width: 100%;
+            border-radius: 15px;
+            border: 3px solid #1e293b;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .card {
+            width: 48%;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 22px;
+        }
+
+        .green { background: #16a34a; }
+        .red { background: #dc2626; }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🛡 VisionGuard AI</h1>
+    <p>Real-Time PPE Compliance System</p>
+
+    <button onclick="start()">▶ Start Detection</button>
+
+    <div class="dashboard">
+
+        <!-- LEFT (CAMERA) -->
+        <div class="left">
+            <img id="videoFeed">
+        </div>
+
+        <!-- RIGHT (STATS + CHART) -->
+        <div class="right">
+
+            <div class="cards">
+                <div class="card green">
+                    😷 Mask
+                    <p id="maskCount">0</p>
+                </div>
+
+                <div class="card red">
+                    ❌ No Mask
+                    <p id="noMaskCount">0</p>
+                </div>
+            </div>
+
+            <canvas id="chart"></canvas>
+
+        </div>
+    </div>
+</div>
+
+<audio id="alertSound" src="https://www.soundjay.com/buttons/beep-01a.mp3"></audio>
+
+<script>
+function start() {
+    document.getElementById("videoFeed").src = "/video_feed";
+}
+
+// Chart
+const ctx = document.getElementById("chart");
+const chart = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+        labels: ["Mask", "No Mask"],
+        datasets: [{
+            data: [0, 0]
+        }]
+    }
+});
+
+// Live update
+function update() {
+    fetch("/stats")
+    .then(res => res.json())
+    .then(data => {
+        const mask = data.mask;
+        const noMask = data.no_mask;
+
+        document.getElementById("maskCount").innerText = mask;
+        document.getElementById("noMaskCount").innerText = noMask;
+
+        chart.data.datasets[0].data = [mask, noMask];
+        chart.update();
+
+        // 🔊 ALERT
+        if (noMask > 0) {
+            document.getElementById("alertSound").play();
+        }
+    });
+}
+
+setInterval(update, 1000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+path: dataset
+train: images
+val: images
+
+names:
+  0: with_mask
+  1: without_mask
+  2: mask_weared_incorrect
