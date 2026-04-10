@@ -40,7 +40,7 @@ def run_detection():
                 elif label == "without_mask":
                     no_mask_count += 1
                     color = (0, 0, 255)
-                    text = "No Mask"
+                    text = "Without Mask"
                     print("🚨 ALERT: No Mask Detected!")
                 else:
                     color = (0, 165, 255)
