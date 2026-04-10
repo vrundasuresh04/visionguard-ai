@@ -29,4 +29,14 @@ It provides live camera monitoring, detection alerts, and an interactive dashboa
 
 ---
 
-## 📁 Project Structure
+## 🧠 Challenges Faced
+
+- Integrating YOLO with Flask real-time streaming  
+- Handling live updates without page refresh  
+- Managing model performance on CPU  
+
+## ✅ Solutions
+
+- Used threading for background detection  
+- Implemented API polling for live stats  
+- Optimized inference using YOLOv8 lightweight model  
